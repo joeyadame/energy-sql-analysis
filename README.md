@@ -7,6 +7,7 @@ This repository contains SQL queries used to analyze historical U.S. energy data
 The goal of this project is to gain experince writing SQL queries on real-world energy data.
 
 Current focus:
+-Analyze historical U.S retail price data at the state-level
 
 ## Data Source
 U.S. Energy Information Administration (EIA)

@@ -1,5 +1,5 @@
 /*
-Energy Price Analysis
+Retail Price Analysis
 EIA State Electricity Profiles
 PostgreSQL
 
@@ -15,7 +15,7 @@ Explore historical electricity retail prices by state.
 SELECT
     state_id,
     state,
-    COUNT(period) AS number_of_years,
+    COUNT(*) AS number_of_years,
     ROUND(AVG(average_retail_price), 2) AS avg_price
 FROM eia_state_electricity_profile_summary
 GROUP BY state_id, state
@@ -40,25 +40,27 @@ WHERE average_retail_price = (
 
 -- ==================================================
 -- Highest price per state and year of occurrence
+-- Returns multiple rows when a state ties its peak price across years.
 -- ==================================================
 
-WITH state_highest_price AS (
+WITH ranked_state_prices AS (
     SELECT
         state_id,
         state,
-        MAX(average_retail_price) AS highest_recorded_price
+        period,
+        average_retail_price,
+        DENSE_RANK() OVER (
+            PARTITION BY state_id
+            ORDER BY average_retail_price DESC
+        ) AS price_rank
     FROM eia_state_electricity_profile_summary
-    GROUP BY state_id, state
 )
 
 SELECT
-    shp.state_id,
-    shp.state,
-    shp.highest_recorded_price,
-    eia.period
-FROM state_highest_price shp
-JOIN eia_state_electricity_profile_summary eia
-  ON shp.state_id = eia.state_id
- AND shp.state = eia.state
- AND shp.highest_recorded_price = eia.average_retail_price
-ORDER BY shp.highest_recorded_price DESC;
+    state_id,
+    state,
+    average_retail_price AS highest_recorded_price,
+    period
+FROM ranked_state_prices
+WHERE price_rank = 1
+ORDER BY highest_recorded_price DESC, state_id, period;

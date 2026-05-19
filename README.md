@@ -1,20 +1,33 @@
-# U.S. Electricity SQL Analysis
+# U.S. Electricity Data Analysis
 
-SQL-based analysis of public U.S. electricity data using PostgreSQL.
+SQL and Python-based analysis of public U.S. electricity data using
+PostgreSQL, `requests`, and `pandas`.
 
 ## Overview
 
 This project explores U.S. electricity data from the U.S. Energy Information
-Administration (EIA) with a focus on analytical SQL, data auditing, and
-portfolio-ready project structure.
+Administration (EIA) with a focus on analytical SQL, lightweight extraction
+workflow, data auditing, and portfolio-ready project structure.
 
 The current work includes one retail price table and a second electricity stock
 table from a separate API call, both loaded into PostgreSQL and analyzed from
-scratch.
+scratch. The repository also includes Python extraction practice for pulling
+monthly EIA retail sales data through the API.
 
 ## Dataset
 
 Source: U.S. Energy Information Administration (EIA)
+
+## Project Highlights
+
+- Built a public multi-table SQL analysis project using EIA electricity data
+- Audited datasets and analyzed electricity pricing trends in PostgreSQL
+- Wrote CTE, aggregation, subquery, and window-function queries to validate
+  data quality and surface trend patterns
+- Added lightweight Python extraction scripts using `requests` and `pandas` for
+  repeatable EIA API pulls
+- Organized the repo into SQL, Python, docs, schema, and results directories to
+  make the workflow easier to review
 
 Current tables used in analysis:
 
@@ -59,6 +72,13 @@ The queries demonstrate common SQL analysis techniques:
 - window functions
 - join-back and ranking patterns to recover row-level context
 
+The Python extraction work demonstrates:
+
+- API parameter handling
+- response validation
+- conversion to `pandas` DataFrames
+- optional CSV export for downstream loading
+
 ## Project Structure
 
 ```
@@ -69,9 +89,18 @@ sql/
     03_electricity_stock_audit.sql
     README.md
 
+python/
+    extract_retail_sales.py
+    requirements.txt
+    README.md
+
+data/
+    README.md
+
 docs/
     data_sources.md
     methodology.md
+    technical_scope.md
 
 schema/
     schema_notes.md
@@ -91,20 +120,39 @@ The project follows a simple analytical workflow:
    - detect missing values
    - confirm grain and uniqueness
 
-2. **Data preparation**
+2. **Python extraction**
+   - pull retail sales data from the EIA API
+   - validate responses before downstream use
+   - convert response records into a tabular structure
+
+3. **Data preparation**
    - normalize analysis-critical data types
    - prepare time and key fields for querying
 
-3. **SQL analysis**
+4. **SQL analysis**
    - compute summary statistics
    - identify price extremes
    - analyze state-level trends
    - inspect missingness patterns in the second table
 
+## Running The Python Extraction
+
+1. Export your EIA API key:
+   - `export EIA_API_KEY="your_api_key"`
+2. Install Python dependencies:
+   - `pip install -r python/requirements.txt`
+3. Run a preview:
+   - `python python/extract_retail_sales.py --preview`
+4. Optionally write the extract to CSV:
+   - `python python/extract_retail_sales.py --out data/retail_sales_extract.csv`
+5. Optionally narrow the request:
+   - `python python/extract_retail_sales.py --state TX --state CA --sector ALL --length 1000 --preview`
+
 ## Status
 
 Current focus:
-multi-table SQL exploration and analysis of EIA electricity data.
+multi-table SQL exploration, lightweight extraction, and analysis of EIA
+electricity data.
 
 Future work may include:
 

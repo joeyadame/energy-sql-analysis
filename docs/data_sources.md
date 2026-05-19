@@ -4,6 +4,7 @@
 
 - Source: U.S. Energy Information Administration (EIA)
 - Delivery method: API responses loaded into PostgreSQL
+- Extraction tooling in repo: Python scripts using `requests` and `pandas`
 
 ## Current Analytical Tables
 
@@ -34,6 +35,14 @@
   - `fuel_type_description`
   - `stocks`
   - `stocks_units`
+
+## Extraction Workflow Notes
+
+- Retail sales data can be pulled through `python/extract_retail_sales.py`
+- The script uses explicit API parameters for monthly frequency, all-sector
+  records, and a multi-state pull
+- Extracted responses can be previewed in the terminal or written to CSV before
+  database loading
 
 ## Scope Note
 
